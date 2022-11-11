@@ -32,7 +32,7 @@ namespace CarBom.Controllers
             if (mechanicListDTO.Services is not null)
                 mechanics = mechanics.Where(m => m.Services.Where(s => mechanicListDTO.Services.Contains(s.Name)).Any());
 
-            return mechanics.Any() ? Ok(mechanics.OrderBy(m => m.Distance)) : NotFound();
+            return mechanics.Any() ? Ok(mechanics) : NotFound();
         }
 
         [HttpPost]
