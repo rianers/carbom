@@ -20,8 +20,8 @@ CREATE TABLE [Mechanic]
  [distance]    float(5),
  [ranking]     float(3),
  [image]       varbinary(MAX),
- [createdAt]   datetime NOT NULL ,
- [modifiedAt]  datetime NOT NULL ,
+ [createdAt]   datetime NOT NULL,
+ [modifiedAt]  datetime NOT NULL,
 
 
  CONSTRAINT [mechanic_id_pk] PRIMARY KEY CLUSTERED ([id] ASC)
@@ -84,6 +84,43 @@ GO
 CREATE NONCLUSTERED INDEX [mechanic_service_id_fk] ON [Service] 
  (
   [mechanic_service_id] ASC
+ )
+
+GO
+
+CREATE TABLE [OrderedService]
+(
+  [id]            int IDENTITY (1, 1) NOT NULL,
+  [service_id]    int NOT NULL,
+  [customer_id]   int NOT NULL,
+  [mechanic_id]   int NOT NULL,
+  [createdAt]   datetime NOT NULL,
+  [modifiedAt]  datetime NOT NULL,
+
+ CONSTRAINT [ordered_service_id_pk] PRIMARY KEY CLUSTERED ([id] ASC),
+ CONSTRAINT [service_id] FOREIGN KEY ([service_id])  REFERENCES [Service]([id]),
+ CONSTRAINT [customer_id] FOREIGN KEY ([customer_id])  REFERENCES [Customer]([id]),
+ CONSTRAINT [mechanic_id] FOREIGN KEY ([mechanic_id])  REFERENCES [Mechanic]([id])
+);
+GO
+
+CREATE NONCLUSTERED INDEX [service_ordered_service_id_fk] ON [OrderedService] 
+ (
+  [service_id] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [customer_orderedservice_id_fk] ON [OrderedService] 
+ (
+  [customer_id] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [mechanic_orderedservice_id_fk] ON [OrderedService] 
+ (
+  [mechanic_id] ASC
  )
 
 GO
