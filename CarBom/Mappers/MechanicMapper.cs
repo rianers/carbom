@@ -11,7 +11,7 @@ namespace CarBom.Mappers
 
             if (mechanics is not null)
             {
-                for (int mechIndex = 0; mechIndex <= mechanics.Count() - 1; mechIndex++)
+                for (int mechIndex = 0; mechIndex < mechanics.Count(); mechIndex++)
                 {
                     int existingMechanicIndex = result.FindIndex(m => m.Id == mechanics[mechIndex].Id);
 
