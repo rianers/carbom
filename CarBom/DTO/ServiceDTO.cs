@@ -2,8 +2,8 @@
 {
     public class ServiceDTO
     {
-        public string ServiceId { get; set; }
-        public string UserId { get; set; }
-        public string MechanicId { get; set; }
+        public string? Name { get; set; }
+        public string? Image { get; set; }
+        public double? Price { get; set; }
     }
 }
