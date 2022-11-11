@@ -15,7 +15,7 @@ namespace CarBom.Mappers
                 {
                     int existingMechanicIndex = result.FindIndex(m => m.Id == mechanics[mechIndex].Id);
 
-                    if (existingMechanicIndex is -1) //Check if the mechanic is already mapped
+                    if (existingMechanicIndex is -1) //Check if the mechanic is not mapped
                     {
                         var mechanic = new Mechanic()
                         {
@@ -51,6 +51,12 @@ namespace CarBom.Mappers
                 mechanic.Address = new Address();
                 mechanic.Address.Latitude = address.Latitude;
                 mechanic.Address.Longitude = address.Longitude;
+                mechanic.Address.State = address.State;
+                mechanic.Address.City = address.City;
+                mechanic.Address.Street = address.Street;
+                mechanic.Address.Number = address.Number;
+                mechanic.Address.Neighbourhood = address.Neighbourhood;
+                mechanic.Address.ZipPostalCode = address.ZipPostalCode;
                 mechanic.Distance = DistanceGeneratorUtil.DistanceTo(userLat, userLong, address.Latitude, address.Longitude);
             }
         }

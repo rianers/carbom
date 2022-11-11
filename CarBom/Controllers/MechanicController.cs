@@ -11,9 +11,11 @@ namespace CarBom.Controllers
     public class MechanicController : ControllerBase
     {
         private readonly IMechanicRepository _mechanicRepository;
-        public MechanicController(IMechanicRepository mechanicRepository)
+        private readonly IAddressRepository _addressRepository;
+        public MechanicController(IMechanicRepository mechanicRepository, IAddressRepository addressRepository)
         {
             _mechanicRepository = mechanicRepository;
+            _addressRepository = addressRepository;
         }
 
         [HttpGet]
@@ -36,7 +38,7 @@ namespace CarBom.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] MechanicDTO mechanicDTO)
+        public async Task<IActionResult> Post([FromBody] MechanicDTO mechanicDTO)
         {
             if (mechanicDTO is not null)
             {
@@ -51,7 +53,8 @@ namespace CarBom.Controllers
                         Ranking = mechanicDTO.Ranking
                     };
 
-                    _mechanicRepository.Post(mechanic);
+                    int mechanicId = await _mechanicRepository.Post(mechanic);
+                    await _addressRepository.Post(mechanic.Address, mechanicId.ToString());
                 }
                 catch (Exception)
                 {

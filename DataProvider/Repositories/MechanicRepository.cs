@@ -9,10 +9,11 @@ namespace DataProvider.Repositories
     {
         public MechanicRepository(IConfiguration configuration) : base(configuration) { }
 
-        public async Task Post(Mechanic mechanic)
+        public async Task<int> Post(Mechanic mechanic)
         {
             string query = @"INSERT INTO Mechanic (name, description, distance, ranking, createdAt, modifiedAt) 
-                                         VALUES(@name, @description, @distance, @ranking, GETDATE(), GETDATE());";
+                                         VALUES(@name, @description, @distance, @ranking, GETDATE(), GETDATE());
+                             SELECT CAST(SCOPE_IDENTITY() as int)";
 
             var param = new
             {
@@ -26,9 +27,11 @@ namespace DataProvider.Repositories
 
             await con.OpenAsync();
 
-            await con.ExecuteAsync(query, param, commandType: System.Data.CommandType.Text);
+            var result = await con.QueryAsync<int>(query, param);
 
             await con.CloseAsync();
+
+            return result.Single();
         }
 
         public List<Mechanic> GetAll()
@@ -46,11 +49,17 @@ namespace DataProvider.Repositories
 									sv.price as servicePrice,
 									sv.image as serviceImage,
 									ad.latitude as mechanicLatitude,
-									ad.longitude as mechanicLongitude
+									ad.longitude as mechanicLongitude,
+                                    ad.state as state,
+                                    ad.city as city,
+                                    ad.street as street,
+                                    ad.number as number,
+                                    ad.neighbourhood as neighbourhood,
+                                    ad.zippostalcode as zippostalcode
                             FROM Mechanic mc
-							LEFT JOIN (SELECT mechanic_address_id, latitude, longitude FROM [dbo].[Address]) AS ad
+							LEFT JOIN (SELECT * FROM Address) AS ad
 							ON mc.id = ad.mechanic_address_id
-							LEFT JOIN (SELECT mechanic_service_id, name, price, image FROM [dbo].[Service]) AS sv
+							LEFT JOIN (SELECT mechanic_service_id, name, price, image FROM Service) AS sv
 							ON mc.id = mechanic_service_id";
 
                 SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
@@ -80,6 +89,12 @@ namespace DataProvider.Repositories
                         //TODO: mechanic NEEDS to have a latitude and longitude (fluent validator)
                         mechanic.Address.Latitude = oReader["mechanicLatitude"] is DBNull ? 0 : Convert.ToDouble(oReader["mechanicLatitude"]); //remove this condition once the rule validator for address is applied
                         mechanic.Address.Longitude = oReader["mechanicLongitude"] is DBNull ? 0 : Convert.ToDouble(oReader["mechanicLongitude"]); //remove this condition once the rule validator for address is applied
+                        mechanic.Address.State = oReader["state"] is DBNull ? null : oReader["state"].ToString();
+                        mechanic.Address.City = oReader["city"] is DBNull ? null : oReader["city"].ToString();
+                        mechanic.Address.Street = oReader["street"] is DBNull ? null : oReader["street"].ToString();
+                        mechanic.Address.Number = oReader["number"] is DBNull ? null : oReader["number"].ToString();
+                        mechanic.Address.Neighbourhood = oReader["neighbourhood"] is DBNull ? null : oReader["neighbourhood"].ToString();
+                        mechanic.Address.ZipPostalCode = oReader["zippostalcode"] is DBNull ? null : oReader["zippostalcode"].ToString();
 
                         mechanics.Add(mechanic);
                     }
@@ -92,7 +107,7 @@ namespace DataProvider.Repositories
 
     public interface IMechanicRepository
     {
-        Task Post(Mechanic mechanic);
+        Task<int> Post(Mechanic mechanic);
         List<Mechanic> GetAll();
     }
 }
