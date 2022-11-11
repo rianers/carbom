@@ -83,11 +83,9 @@ namespace DataProvider.Repositories
 
                         mechanics.Add(mechanic);
                     }
-
                     sqlConnection.Close();
                 }
             }
-
             return mechanics;
         }
     }

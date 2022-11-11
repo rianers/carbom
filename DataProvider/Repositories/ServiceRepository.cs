@@ -9,16 +9,17 @@ namespace DataProvider.Repositories
     {
         public ServiceRepository(IConfiguration configuration) : base(configuration) { }
 
-        public async Task Post(Service service)
+        public async Task Post(Service service, string mechanicId)
         {
-            string query = @"INSERT INTO Service (name, price, image, createdAt, modifiedAt)
-                                VALUES (@name, @price, @image, GETDATE(), GETDATE())";
+            string query = @"INSERT INTO Service (name, price, image, createdAt, modifiedAt, mechanic_service_id)
+                                VALUES (@name, @price, @image, GETDATE(), GETDATE(), @mechanicId)";
 
             var param = new
             {
                 service.Name,
                 service.Price,
-                service.Image
+                service.Image,
+                mechanicId
             };
 
             using var con = new SqlConnection(GetConnection());
@@ -76,7 +77,7 @@ namespace DataProvider.Repositories
 
     public interface IServiceRepository
     {
-        Task Post(Service service);
+        Task Post(Service service, string mechanicId);
         List<Service> Get(string mechanicId);
     }
 }

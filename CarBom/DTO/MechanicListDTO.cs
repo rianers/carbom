@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CarBom.DTO
+﻿namespace CarBom.DTO
 {
     public record MechanicListDTO
     {

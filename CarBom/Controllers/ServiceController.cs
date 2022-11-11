@@ -17,9 +17,9 @@ namespace CarBom.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ServiceDTO serviceDTO)
+        public IActionResult Post([FromBody] ServiceDTO serviceDTO, string mechanicId)
         {
-            if (serviceDTO is not null)
+            if (serviceDTO is not null && mechanicId is not null)
             {
                 try
                 {
@@ -30,7 +30,7 @@ namespace CarBom.Controllers
                         Price = serviceDTO.Price
                     };
 
-                    _serviceRepository.Post(service);
+                    _serviceRepository.Post(service, mechanicId);
                 }
                 catch (Exception)
                 {
@@ -53,18 +53,6 @@ namespace CarBom.Controllers
                 return Ok(services);
             else
                 return NotFound();
-        }
-
-        [HttpPost]
-        [Route("orderservice")]
-        public IActionResult Post([FromBody] OrderedServiceDTO orderedServiceDTO)
-        {
-            //TODO: Create new table in DB (log? ordered table?) and use a new context
-            if (orderedServiceDTO is not null)
-            {
-                return Ok();
-            }
-            return Ok();
         }
     }
 }
