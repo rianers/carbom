@@ -19,7 +19,7 @@ CREATE TABLE [Mechanic]
  [description] varchar(100) NOT NULL,
  [distance]    float(5),
  [ranking]     float(3),
- [image]       varbinary(MAX),
+ [image]       varchar(100),
  [createdAt]   datetime NOT NULL,
  [modifiedAt]  datetime NOT NULL,
 
@@ -70,7 +70,7 @@ CREATE TABLE [Service]
  [id]               int IDENTITY (1, 1) NOT NULL,
  [name]             varchar(50) NOT NULL,
  [price]            float(5),
- [image]            varbinary(MAX),
+ [image]            varchar(100),
  [createdAt]        datetime NOT NULL,
  [modifiedAt]       datetime NOT NULL,
  [mechanic_service_id] int NOT NULL,
