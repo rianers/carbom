@@ -40,11 +40,12 @@ namespace DataProvider.Repositories
 
             using (SqlConnection sqlConnection = new SqlConnection(GetConnection()))
             {
-                string query = @"SELECT mc.id as mechanicId,
+                string query = @"SELECT DISTINCT mc.id as mechanicId,
                                     mc.name as mechanicName, 
                                     mc.image as mechanicImage,
                                     mc.ranking as mechanicRanking,
                                     mc.description as mechanicDescription,
+									sv.id as serviceId,
                                     sv.name as serviceName,
 									sv.price as servicePrice,
 									sv.image as serviceImage,
@@ -59,7 +60,7 @@ namespace DataProvider.Repositories
                             FROM Mechanic mc
 							LEFT JOIN (SELECT * FROM Address) AS ad
 							ON mc.id = ad.mechanic_address_id
-							LEFT JOIN (SELECT mechanic_service_id, name, price, image FROM Service) AS sv
+							LEFT JOIN (SELECT id, mechanic_service_id, name, price, image FROM Service) AS sv
 							ON mc.id = mechanic_service_id";
 
                 SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
@@ -75,20 +76,19 @@ namespace DataProvider.Repositories
                             Services = new List<Service>() { new Service() }
                         };
 
-                        //TODO: mechanic needs to have a name (fluent validator)
                         mechanic.Id = oReader["mechanicId"].ToString();
                         mechanic.Name = oReader["mechanicName"].ToString();
                         mechanic.Image = oReader["mechanicImage"] is DBNull ? null : oReader["mechanicImage"].ToString();
                         mechanic.Ranking = oReader["mechanicRanking"] is DBNull ? null : Convert.ToDouble(oReader["mechanicRanking"]);
                         mechanic.Description = oReader["mechanicDescription"] is DBNull ? null : oReader["mechanicDescription"].ToString();
 
+                        mechanic.Services[0].Id = oReader["serviceId"] is DBNull ? null : oReader["serviceId"].ToString();
                         mechanic.Services[0].Name = oReader["serviceName"] is DBNull ? null : oReader["serviceName"].ToString();
                         mechanic.Services[0].Price = oReader["servicePrice"] is DBNull ? null : Convert.ToDouble(oReader["servicePrice"]);
                         mechanic.Services[0].Image = oReader["serviceImage"] is DBNull ? null : oReader["serviceImage"].ToString();
 
-                        //TODO: mechanic NEEDS to have a latitude and longitude (fluent validator)
-                        mechanic.Address.Latitude = oReader["mechanicLatitude"] is DBNull ? 0 : Convert.ToDouble(oReader["mechanicLatitude"]); //remove this condition once the rule validator for address is applied
-                        mechanic.Address.Longitude = oReader["mechanicLongitude"] is DBNull ? 0 : Convert.ToDouble(oReader["mechanicLongitude"]); //remove this condition once the rule validator for address is applied
+                        mechanic.Address.Latitude = oReader["mechanicLatitude"] is DBNull ? 0 : Convert.ToDouble(oReader["mechanicLatitude"]);
+                        mechanic.Address.Longitude = oReader["mechanicLongitude"] is DBNull ? 0 : Convert.ToDouble(oReader["mechanicLongitude"]);
                         mechanic.Address.State = oReader["state"] is DBNull ? null : oReader["state"].ToString();
                         mechanic.Address.City = oReader["city"] is DBNull ? null : oReader["city"].ToString();
                         mechanic.Address.Street = oReader["street"] is DBNull ? null : oReader["street"].ToString();

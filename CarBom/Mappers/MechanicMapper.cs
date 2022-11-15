@@ -65,6 +65,7 @@ namespace CarBom.Mappers
         {
             var service = new Service()
             {
+                Id = mechanics[mechIndex].Services?[0].Id,
                 Name = mechanics[mechIndex].Services?[0].Name,
                 Price = mechanics[mechIndex].Services?[0].Price,
                 Image = mechanics[mechIndex].Services?[0].Image
