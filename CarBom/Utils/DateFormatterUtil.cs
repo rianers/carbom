@@ -9,7 +9,7 @@ namespace CarBom.Utils
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        public static string FormatDate(DateTime date)
+        public static string FormatDateToCarBomPattern(DateTime date)
         {
             DateTimeFormatInfo cultureInfo = CultureInfo.GetCultureInfo("pt-BR").DateTimeFormat;
             string weekDay = cultureInfo.GetDayName(date.DayOfWeek);
@@ -25,6 +25,6 @@ namespace CarBom.Utils
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        public static string FormatToISO8601PatternDate(DateTime date) => date.ToString("dd/MM/yyyy");
+        public static string FormatDateToISO8601Pattern(DateTime date) => date.ToString("dd/MM/yyyy");
     }
 }

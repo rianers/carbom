@@ -1,4 +1,6 @@
 ﻿using CarBom.DTO;
+using CarBom.Mappers;
+using CarBom.Responses;
 using DataProvider.DataModels;
 using DataProvider.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +12,12 @@ namespace CarBom.Controllers
     public class OrderedServiceController : ControllerBase
     {
         private readonly IOrderedServiceRepository _orderedServiceRepository;
+        private readonly IOrderedServiceMapper _orderedServiceMapper;
 
-        public OrderedServiceController(IOrderedServiceRepository orderedServiceRepository)
+        public OrderedServiceController(IOrderedServiceRepository orderedServiceRepository, IOrderedServiceMapper orderedServiceMapper)
         {
             _orderedServiceRepository = orderedServiceRepository;
+            _orderedServiceMapper = orderedServiceMapper;
         }
 
         [HttpPost]
@@ -38,12 +42,15 @@ namespace CarBom.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<OrderedService>> Get([FromQuery] string userId)
+        public ActionResult<IEnumerable<OrderedServiceResponse>> Get([FromQuery] string userId)
         {
-            var services = _orderedServiceRepository.Get(userId);
+            var orderedServices = _orderedServiceRepository.Get(userId);
 
-            if (services is not null)
-                return Ok(services);
+            if (orderedServices is not null)
+            {
+                var orderedServicesMapped = _orderedServiceMapper.MapOrderedServices(orderedServices);
+                return Ok(orderedServicesMapped);
+            }
             else
                 return NotFound();
         }

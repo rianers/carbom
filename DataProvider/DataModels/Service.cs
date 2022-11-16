@@ -9,22 +9,4 @@ namespace DataProvider.DataModels
         public string? Image { get; set; }
         public double? Price { get; set; }
     }
-
-    public enum ServiceTypes
-    {
-        [Description("Serviços Gerais")]
-        ServicosGerais,
-
-        [Description("Tinturaria")]
-        Tinturaria,
-
-        [Description("Funilaria")]
-        Funilaria,
-
-        [Description("Peças")]
-        Pecas,
-
-        [Description("Conserto")]
-        Conserto
-    }
 }

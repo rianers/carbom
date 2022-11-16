@@ -17,6 +17,7 @@ builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IOrderedServiceRepository, OrderedServiceRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddScoped<IMechanicMapper, MechanicMapper>();
+builder.Services.AddScoped<IOrderedServiceMapper, OrderedServiceMapper>();
 
 var app = builder.Build();
 

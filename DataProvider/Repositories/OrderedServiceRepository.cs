@@ -62,20 +62,11 @@ namespace DataProvider.Repositories
                 {
                     while (oReader.Read())
                     {
-                        //TODO: Move it to a mapper and add the formated date (weekDay day month year - Sex 29 julho 2022)
-                        var createdDate = Convert.ToDateTime(oReader["createdDate"]);
-                        string weekDay = CultureInfo.GetCultureInfo("pt-BR").DateTimeFormat.GetDayName(createdDate.DayOfWeek);
-                        string day = createdDate.Day.ToString();
-                        string month = CultureInfo.GetCultureInfo("pt-BR").DateTimeFormat.GetMonthName(createdDate.Month);
-                        string year = createdDate.Year.ToString();
-                        //end date utils code
-
                         OrderedService orderedService = new OrderedService
                         {
                             Name = oReader["serviceName"].ToString(),
                             Mechanic = oReader["mechanicName"].ToString(),
-                            CreatedDate = createdDate.ToString("dd/MM/yyyy"),
-                            FormattedDate = string.Format("{0} {1} {2} {3}", weekDay, day, month, year)
+                            CreatedDate = Convert.ToDateTime(oReader["createdDate"])
                         };
 
                         orderedServices.Add(orderedService);
