@@ -3,7 +3,7 @@ CREATE TABLE [Customer]
  [id]         int IDENTITY (1, 1) NOT NULL,
  [name]       varchar(50) NOT NULL,
  [email]      varchar(50) NOT NULL,
- [password]   varchar(50) NOT NULL,
+ [password]   varchar(64) NOT NULL,
  [createdAt]  datetime NOT NULL,
  [modifiedAt] datetime NOT NULL,
 
