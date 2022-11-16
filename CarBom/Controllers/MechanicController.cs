@@ -1,5 +1,5 @@
-﻿using CarBom.DTO;
-using CarBom.Mappers;
+﻿using CarBom.Mappers;
+using CarBom.Requests;
 using DataProvider.DataModels;
 using DataProvider.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +19,9 @@ namespace CarBom.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Mechanic>> Get([FromQuery] MechanicListDTO mechanicListDTO, [FromServices] IMechanicMapper mechanicMapper)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<Mechanic>> Get([FromQuery] MechanicListRequest mechanicListDTO, [FromServices] IMechanicMapper mechanicMapper)
         {
             List<Mechanic>? mechanicsResponse = _mechanicRepository.GetAll();
 
@@ -38,7 +40,9 @@ namespace CarBom.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] MechanicDTO mechanicDTO)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Post([FromBody] MechanicRequest mechanicDTO)
         {
             if (mechanicDTO is not null)
             {

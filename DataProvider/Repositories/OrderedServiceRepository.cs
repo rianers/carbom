@@ -2,7 +2,6 @@
 using DataProvider.DataModels;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
-using System.Globalization;
 
 namespace DataProvider.Repositories
 {

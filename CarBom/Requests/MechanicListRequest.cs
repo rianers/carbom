@@ -1,6 +1,6 @@
-﻿namespace CarBom.DTO
+﻿namespace CarBom.Requests
 {
-    public record MechanicListDTO
+    public record MechanicListRequest
     {
         public string? Id { get; set; }
         public string? Name { get; set; }

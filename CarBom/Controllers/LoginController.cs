@@ -1,4 +1,4 @@
-﻿using CarBom.DTO;
+﻿using CarBom.Requests;
 using CarBom.Utils;
 using DataProvider.DataModels;
 using DataProvider.Repositories;
@@ -19,6 +19,8 @@ namespace CarBom.Controllers
 
         [HttpPost]
         [Route("createuser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] User user)
         {
             if (user is not null)
@@ -42,7 +44,9 @@ namespace CarBom.Controllers
 
         [HttpPost]
         [Route("authenticate")]
-        public async Task<IActionResult> Post([FromBody] UserDTO user)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Post([FromBody] UserRequest user)
         {
             if (user.Email is not null && user.Password is not null)
             {

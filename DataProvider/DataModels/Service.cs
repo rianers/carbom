@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace DataProvider.DataModels
+﻿namespace DataProvider.DataModels
 {
     public class Service
     {

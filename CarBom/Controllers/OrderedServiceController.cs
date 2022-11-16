@@ -1,7 +1,6 @@
-﻿using CarBom.DTO;
-using CarBom.Mappers;
+﻿using CarBom.Mappers;
+using CarBom.Requests;
 using CarBom.Responses;
-using DataProvider.DataModels;
 using DataProvider.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,13 +20,15 @@ namespace CarBom.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] OrderedServiceDTO orderedServiceDTO)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Post([FromBody] OrderedServiceRequest orderedServiceRequest)
         {
-            if (orderedServiceDTO is not null)
+            if (orderedServiceRequest is not null)
             {
                 try
                 {
-                    _orderedServiceRepository.Post(orderedServiceDTO.ServiceId, orderedServiceDTO.UserId, orderedServiceDTO.MechanicId);
+                    _orderedServiceRepository.Post(orderedServiceRequest.ServiceId, orderedServiceRequest.UserId, orderedServiceRequest.MechanicId);
                 }
                 catch (Exception)
                 {
@@ -42,6 +43,8 @@ namespace CarBom.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<OrderedServiceResponse>> Get([FromQuery] string userId)
         {
             var orderedServices = _orderedServiceRepository.Get(userId);

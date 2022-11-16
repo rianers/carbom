@@ -1,6 +1,6 @@
-﻿namespace CarBom.DTO
+﻿namespace CarBom.Requests
 {
-    public class UserDTO
+    public class UserRequest
     {
         public string Email { get; set; }
         public string Password { get; set; }

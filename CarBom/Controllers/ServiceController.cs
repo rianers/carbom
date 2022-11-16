@@ -1,4 +1,4 @@
-﻿using CarBom.DTO;
+﻿using CarBom.Requests;
 using DataProvider.DataModels;
 using DataProvider.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +17,19 @@ namespace CarBom.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ServiceDTO serviceDTO, string mechanicId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Post([FromBody] ServiceRequest serviceRequest, string mechanicId)
         {
-            if (serviceDTO is not null && mechanicId is not null)
+            if (serviceRequest is not null && mechanicId is not null)
             {
                 try
                 {
                     Service service = new Service
                     {
-                        Name = serviceDTO.Name,
-                        Image = serviceDTO.Image,
-                        Price = serviceDTO.Price
+                        Name = serviceRequest.Name,
+                        Image = serviceRequest.Image,
+                        Price = serviceRequest.Price
                     };
 
                     _serviceRepository.Post(service, mechanicId);
@@ -45,6 +47,8 @@ namespace CarBom.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<Service>> Get([FromQuery] string mechanicId)
         {
             var services = _serviceRepository.Get(mechanicId);
