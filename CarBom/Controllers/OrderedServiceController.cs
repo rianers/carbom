@@ -1,4 +1,5 @@
 ﻿using CarBom.DTO;
+using DataProvider.DataModels;
 using DataProvider.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +35,17 @@ namespace CarBom.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<OrderedService>> Get([FromQuery] string userId)
+        {
+            var services = _orderedServiceRepository.Get(userId);
+
+            if (services is not null)
+                return Ok(services);
+            else
+                return NotFound();
         }
     }
 }
