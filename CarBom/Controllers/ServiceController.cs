@@ -25,6 +25,12 @@ namespace CarBom.Controllers
             _serviceRequestValidator = serviceRequestValidator;
         }
 
+        /// <summary>
+        /// Create a new Service for a specified Mechanic
+        /// </summary>
+        /// <param name="serviceRequest"></param>
+        /// <param name="mechanicId"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -45,6 +51,11 @@ namespace CarBom.Controllers
             return BadRequest(validationResponse);
         }
 
+        /// <summary>
+        /// Retrieves all ordered services related to specified Mechanic
+        /// </summary>
+        /// <param name="mechanicId"></param>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -52,7 +63,7 @@ namespace CarBom.Controllers
         {
             var services = _serviceRepository.Get(mechanicId);
 
-            if (services is not null)
+            if (services.Count > 0)
                 return Ok(services);
             else
                 return NotFound();

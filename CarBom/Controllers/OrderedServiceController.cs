@@ -27,6 +27,11 @@ namespace CarBom.Controllers
             _orderedServiceRequestValidator = orderedServiceRequestValidator;
         }
 
+        /// <summary>
+        /// Order a service
+        /// </summary>
+        /// <param name="orderedServiceRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -41,6 +46,11 @@ namespace CarBom.Controllers
             return BadRequest(validationResponse);
         }
 
+        /// <summary>
+        /// Retrieves all services by specified userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

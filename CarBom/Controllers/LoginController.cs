@@ -29,6 +29,11 @@ namespace CarBom.Controllers
             _userValidator = userValidator;
         }
 
+        /// <summary>
+        /// Create a new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("createuser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,6 +50,11 @@ namespace CarBom.Controllers
             return BadRequest(validationResponse);
         }
 
+        /// <summary>
+        /// Verify if the user credentials are valid
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Return isValid = true if is valid, isValid = false if it is not</returns>
         [HttpPost]
         [Route("authenticate")]
         [ProducesResponseType(StatusCodes.Status200OK)]

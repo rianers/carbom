@@ -5,6 +5,11 @@ namespace CarBom.Utils
 {
     public static class EncryptUtil
     {
+        /// <summary>
+        /// Encrypt any string to SHA256 HashAlgorithm Cryptography
+        /// </summary>
+        /// <param name="rawData"></param>
+        /// <returns></returns>
         public static string EncryptToSha256Hash(string rawData)
         {
             using (SHA256 sha256Hash = SHA256.Create())

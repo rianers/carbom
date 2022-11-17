@@ -2,6 +2,14 @@
 {
     public static class DistanceGeneratorUtil
     {
+        /// <summary>
+        /// Retrives the distance between 2 locations (x, y) to (x, y) by respective latitude and longitude
+        /// </summary>
+        /// <param name="lat1">User Latitude</param>
+        /// <param name="lon1">User Longitude</param>
+        /// <param name="lat2">Origin Latitude (Mechanic)</param>
+        /// <param name="lon2">Origin Longitude (Mechanic)</param>
+        /// <returns></returns>
         public static double DistanceTo(double lat1, double lon1, double lat2, double lon2)
         {
             //r = d*(π/180)

@@ -27,6 +27,12 @@ namespace CarBom.Controllers
             _mechanicRequestValidator = mechanicRequestValidator;
         }
 
+        /// <summary>
+        /// Retrieves all mechanics and apply filtering as per user preference (Can be filtering by name, service names and distance)
+        /// </summary>
+        /// <param name="mechanicListDTO"></param>
+        /// <param name="mechanicMapper"></param>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -48,6 +54,11 @@ namespace CarBom.Controllers
             return mechanics.Any() ? Ok(mechanics) : NotFound();
         }
 
+        /// <summary>
+        /// Create a new Mechanic
+        /// </summary>
+        /// <param name="mechanicRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
