@@ -1,7 +1,9 @@
 ﻿using CarBom.Mappers;
 using CarBom.Requests;
+using CarBom.Responses;
 using DataProvider.DataModels;
 using DataProvider.Repositories;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarBom.Controllers
@@ -12,10 +14,17 @@ namespace CarBom.Controllers
     {
         private readonly IMechanicRepository _mechanicRepository;
         private readonly IAddressRepository _addressRepository;
-        public MechanicController(IMechanicRepository mechanicRepository, IAddressRepository addressRepository)
+        private readonly IErrorResponseMapper _errorResponseMapper;
+        private readonly IValidator<MechanicRequest> _mechanicRequestValidator;
+        public MechanicController(IMechanicRepository mechanicRepository,
+                                  IAddressRepository addressRepository,
+                                  IErrorResponseMapper errorResponseMapper,
+                                  IValidator<MechanicRequest> mechanicRequestValidator)
         {
             _mechanicRepository = mechanicRepository;
             _addressRepository = addressRepository;
+            _errorResponseMapper = errorResponseMapper;
+            _mechanicRequestValidator = mechanicRequestValidator;
         }
 
         [HttpGet]
@@ -42,34 +51,48 @@ namespace CarBom.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post([FromBody] MechanicRequest mechanicDTO)
+        public async Task<ActionResult<MechanicResponse>> Post([FromBody] MechanicRequest mechanicRequest)
         {
-            if (mechanicDTO is not null)
+            var validationResponse = GetMechanicResponse(mechanicRequest);
+            if (validationResponse.ResultCode is ResultConstants.SUCCESS)
             {
-                try
+                Mechanic mechanic = new Mechanic
                 {
-                    Mechanic mechanic = new Mechanic
-                    {
-                        Name = mechanicDTO.Name,
-                        Description = mechanicDTO.Description,
-                        Address = mechanicDTO.Address,
-                        Image = mechanicDTO.Image,
-                        Ranking = mechanicDTO.Ranking
-                    };
+                    Name = mechanicRequest.Name,
+                    Description = mechanicRequest.Description,
+                    Address = mechanicRequest.Address,
+                    Image = mechanicRequest.Image,
+                    Ranking = mechanicRequest.Ranking
+                };
 
-                    int mechanicId = await _mechanicRepository.Post(mechanic);
-                    await _addressRepository.Post(mechanic.Address, mechanicId.ToString());
-                }
-                catch (Exception)
+                int mechanicId = await _mechanicRepository.Post(mechanic);
+                await _addressRepository.Post(mechanic.Address, mechanicId.ToString());
+                return Ok(validationResponse);
+            }
+            return BadRequest(validationResponse);
+        }
+
+        private MechanicResponse GetMechanicResponse(MechanicRequest mechanicRequest)
+        {
+            MechanicResponse? mechanicResponse = null;
+            var validationResponse = _mechanicRequestValidator.Validate(mechanicRequest);
+            if (validationResponse is not null && !validationResponse.IsValid)
+            {
+                List<ResultDetail> resultDetails = _errorResponseMapper.Map(validationResponse);
+                mechanicResponse = new MechanicResponse
                 {
-                    return BadRequest();
-                }
-                return Ok();
+                    ResultCode = ResultConstants.ERROR,
+                    ResultDetails = resultDetails
+                };
             }
             else
             {
-                return BadRequest();
+                mechanicResponse = new MechanicResponse
+                {
+                    ResultCode = ResultConstants.SUCCESS
+                };
             }
+            return mechanicResponse;
         }
     }
 }

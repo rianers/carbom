@@ -1,6 +1,9 @@
-﻿using CarBom.Requests;
+﻿using CarBom.Mappers;
+using CarBom.Requests;
+using CarBom.Responses;
 using DataProvider.DataModels;
 using DataProvider.Repositories;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarBom.Controllers
@@ -10,40 +13,36 @@ namespace CarBom.Controllers
     public class ServiceController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepository;
+        private readonly IErrorResponseMapper _errorResponseMapper;
+        private readonly IValidator<ServiceRequest> _serviceRequestValidator;
 
-        public ServiceController(IServiceRepository serviceRepository)
+        public ServiceController(IServiceRepository serviceRepository,
+                                 IErrorResponseMapper errorResponseMapper,
+                                 IValidator<ServiceRequest> serviceRequestValidator)
         {
             _serviceRepository = serviceRepository;
+            _errorResponseMapper = errorResponseMapper;
+            _serviceRequestValidator = serviceRequestValidator;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] ServiceRequest serviceRequest, string mechanicId)
+        public async Task<ActionResult<ServiceResponse>> Post([FromBody] ServiceRequest serviceRequest, string mechanicId)
         {
-            if (serviceRequest is not null && mechanicId is not null)
+            var validationResponse = GetServiceResponse(serviceRequest);
+            if (validationResponse.ResultCode is ResultConstants.SUCCESS)
             {
-                try
+                Service service = new Service
                 {
-                    Service service = new Service
-                    {
-                        Name = serviceRequest.Name,
-                        Image = serviceRequest.Image,
-                        Price = serviceRequest.Price
-                    };
-
-                    _serviceRepository.Post(service, mechanicId);
-                }
-                catch (Exception)
-                {
-                    return BadRequest();
-                }
-                return Ok();
+                    Name = serviceRequest.Name,
+                    Image = serviceRequest.Image,
+                    Price = serviceRequest.Price
+                };
+                await _serviceRepository.Post(service, mechanicId);
+                return Ok(validationResponse);
             }
-            else
-            {
-                return BadRequest();
-            }
+            return BadRequest(validationResponse);
         }
 
         [HttpGet]
@@ -57,6 +56,29 @@ namespace CarBom.Controllers
                 return Ok(services);
             else
                 return NotFound();
+        }
+
+        private ServiceResponse GetServiceResponse(ServiceRequest serviceRequest)
+        {
+            ServiceResponse? serviceResponse = null;
+            var validationResponse = _serviceRequestValidator.Validate(serviceRequest);
+            if (validationResponse is not null && !validationResponse.IsValid)
+            {
+                List<ResultDetail> resultDetails = _errorResponseMapper.Map(validationResponse);
+                serviceResponse = new ServiceResponse
+                {
+                    ResultCode = ResultConstants.ERROR,
+                    ResultDetails = resultDetails
+                };
+            }
+            else
+            {
+                serviceResponse = new ServiceResponse
+                {
+                    ResultCode = ResultConstants.SUCCESS
+                };
+            }
+            return serviceResponse;
         }
     }
 }

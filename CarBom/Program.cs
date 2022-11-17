@@ -1,6 +1,10 @@
 using CarBom.Mappers;
+using CarBom.Requests;
+using CarBom.Validators;
 using DataProvider;
+using DataProvider.DataModels;
 using DataProvider.Repositories;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +22,12 @@ builder.Services.AddScoped<IOrderedServiceRepository, OrderedServiceRepository>(
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddScoped<IMechanicMapper, MechanicMapper>();
 builder.Services.AddScoped<IOrderedServiceMapper, OrderedServiceMapper>();
+builder.Services.AddScoped<IErrorResponseMapper, ErrorResponseMapper>();
+builder.Services.AddSingleton<IValidator<MechanicRequest>, MechanicRequestValidator>();
+builder.Services.AddSingleton<IValidator<OrderedServiceRequest>, OrderedServiceRequestValidator>();
+builder.Services.AddSingleton<IValidator<ServiceRequest>, ServiceRequestValidator>();
+builder.Services.AddSingleton<IValidator<UserRequest>, UserRequestValidator>();
+builder.Services.AddSingleton<IValidator<User>, UserValidator>();
 
 var app = builder.Build();
 

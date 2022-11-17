@@ -1,6 +1,6 @@
 ﻿namespace CarBom.Responses
 {
-    public class OrderedServiceResponse
+    public class OrderedServiceResponse : Result
     {
         public string Name { get; set; }
         public string Mechanic { get; set; }
