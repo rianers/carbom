@@ -45,7 +45,7 @@ namespace CarBom.Controllers
             {
                 user.Password = EncryptUtil.EncryptToSha256Hash(user.Password);
                 await _loginRepository.Post(user);
-                return Ok(GetUserResponse(true));
+                return Ok(GetUserResponse(true, null));
             }
             return BadRequest(validationResponse);
         }
@@ -65,8 +65,12 @@ namespace CarBom.Controllers
             if (validationResponse is null)
             {
                 user.Password = EncryptUtil.EncryptToSha256Hash(user.Password);
-                bool isValid = await _loginRepository.Get(user.Email, user.Password);
-                return Ok(GetUserResponse(isValid));
+                var userId = await _loginRepository.Get(user.Email, user.Password);
+                if (userId is not null)
+                    return Ok(GetUserResponse(true, userId));
+                else
+                    return BadRequest(GetUserResponse(false, null));
+                
             }
             return BadRequest(validationResponse);
         }
@@ -104,11 +108,12 @@ namespace CarBom.Controllers
             return userResponse;
         }
 
-        private UserResponse GetUserResponse(bool isValid)
+        private UserResponse GetUserResponse(bool isValid, string? userId)
         {
             string resultCode = isValid ? ResultConstants.SUCCESS : ResultConstants.INVALID_CREDENTIALS;
             UserResponse userResponse = new UserResponse
             {
+                UserId = userId,
                 isValid = isValid,
                 ResultCode = resultCode
             };
