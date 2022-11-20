@@ -31,18 +31,13 @@ namespace DataProvider.Repositories
         }
 
 
-        public async Task<bool> Get(string email, string password)
+        public async Task<string> Get(string email, string password)
         {
-            bool userExists = false;
+            string? userId = null;
 
             using (SqlConnection sqlConnection = new SqlConnection(GetConnection()))
             {
-                string query = @"SELECT
-                                 CASE WHEN EXISTS 
-                                 ( SELECT * FROM Customer WHERE email = @email and password = @password)
-                                 THEN 'TRUE'
-                                 ELSE null
-                                 END";
+                string query = @"SELECT CAST (id as VARCHAR) as id FROM Customer WHERE email = @email and password = @password";
 
                 SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
@@ -65,12 +60,12 @@ namespace DataProvider.Repositories
                 {
                     while (oReader.Read())
                     {
-                        userExists = oReader[0] is not DBNull;
+                        userId = oReader["id"] is DBNull ? null : oReader["id"].ToString();
                     }
                     sqlConnection.Close();
                 }
             }
-            return userExists;
+            return userId;
         }
 
     }
@@ -78,6 +73,6 @@ namespace DataProvider.Repositories
     public interface ILoginRepository
     {
         Task Post(User user);
-        Task<bool> Get(string email, string password);
+        Task<string> Get(string email, string password);
     }
 }
